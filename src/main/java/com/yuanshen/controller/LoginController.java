@@ -8,10 +8,7 @@ import com.yuanshen.util.Result;
 import com.yuanshen.util.constant.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,15 +30,22 @@ public class LoginController {
     private RedisTemplate redisTemplate;
 
     @PostMapping("/login")
-    public Result login(@RequestBody User user) {
-        String username = user.getUsername();
-        String password = user.getPassword();
-        String md5Password = MD5Util.getMD5(password);
+    public Result login(@RequestParam("username") String username,
+                        @RequestParam("password") String password) {
+        /*if(username == null){
+            return Result.error("请输入用户名，用户名不能为空");
+        }
+
+        if(password == null){
+            return Result.error("请输入密码，密码不能为空");
+        }*/
 
         User user2 = userService.login(username);
         if (user2 == null) {
-            return Result.error("用户名错误，登录失败");
+            return Result.error("用户名不存在，登录失败");
         }
+
+        String md5Password = MD5Util.getMD5(password);
 
         String password2 = user2.getPassword();
         if (md5Password.equals(password2)) {
