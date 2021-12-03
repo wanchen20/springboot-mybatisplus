@@ -181,15 +181,14 @@ public class UserController {
      * 用户登入功能
      */
     /*@RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Result login(@RequestBody User user, HttpServletResponse response){
-        String username = user.getUsername();
-        String password = user.getPassword();
-        String md5Password = MD5Util.getMD5(password);
-
+    public Result login(@RequestParam("username") String username,
+                        @RequestParam("password") String password) {
         User user2 = userService.login(username);
-        if(user2 == null){
-            return Result.error("用户名错误，登录失败");
+        if (user2 == null) {
+            return Result.error("用户名不存在，登录失败");
         }
+
+        String md5Password = MD5Util.getMD5(password);
 
         String password2 = user2.getPassword();
         if(md5Password.equals(password2)){
